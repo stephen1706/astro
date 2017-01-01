@@ -276,7 +276,7 @@ public class AstroDataBridge {
     }
 
     private static int getWidth(int duration, Context context) {
-        return (int) (((double) duration / 60) * ViewUtils.dpToPx(300, context));
+        return (int) ((double) duration * ViewUtils.dpToPx(300, context) / 60);
     }
 
     private static int getDurationInMinutes(String input) {

@@ -67,7 +67,7 @@ public class ScheduleAdapter extends BaseAdapter {
             if (TextUtils.isEmpty(item.getScheduleList().get(i).getProgramTitle())) {
                 programName.setText("");
                 startTime.setText("");
-                view.setBackgroundColor(mContext.getResources().getColor(android.R.color.black));
+                view.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
             } else {
                 programName.setText(item.getScheduleList().get(i).getProgramTitle());
                 startTime.setText(item.getScheduleList().get(i).getStartTime());
