@@ -2,6 +2,7 @@ package com.stephen.astro.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -50,6 +51,7 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
     private boolean isLoading;
     private ProgressDialog progressDialog;
     private boolean isFinished;
+    private View loadingFrame;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,11 +80,13 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
     }
 
     private void setUpRequestAPI(int sort) {
-        Log.d("test", "setUpRequestAPI");
         isLoading = true;
         mCurrentSort = sort;
         if (mIndex == 0) {
+            loadingFrame.setVisibility(View.GONE);
             progressDialog = ViewUtils.showProgressDialog(this, getString(R.string.loading));
+        } else {
+            loadingFrame.setVisibility(View.VISIBLE);
         }
 
         mModelHandler.getScheduleList(sort, (Calendar) calendar.clone(), mIndex)
@@ -108,10 +112,17 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
                     isLoading = false;
                     mIndex += PAGINATION_LENGTH;
                     progressDialog.dismiss();
+                    loadingFrame.setVisibility(View.GONE);
                 }, throwable -> {
                     throwable.printStackTrace();
                     progressDialog.dismiss();
-                    isLoading = false;
+                    loadingFrame.setVisibility(View.GONE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            isLoading = false;
+                        }
+                    }, 1000);//avoid re-requesting to fast when end of pagination
 
                     if (throwable instanceof PaginationFinishException) {
                         isFinished = true;
@@ -154,6 +165,7 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
     private void setUpView() {
         contentListView = (ListView) findViewById(R.id.list_view_content);
         channelListView = (ListView) findViewById(R.id.list_view_channel);
+        loadingFrame = findViewById(R.id.frame_loading);
     }
 
     @Override

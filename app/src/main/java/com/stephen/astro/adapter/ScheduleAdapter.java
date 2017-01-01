@@ -2,7 +2,6 @@ package com.stephen.astro.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +85,6 @@ public class ScheduleAdapter extends BaseAdapter {
     }
 
     public void addAll(ArrayList<ScheduleListViewModel> scheduleListViewModels) {
-        Log.d("Test","add all, first added id : " + scheduleListViewModels.get(0).getChannelId());
         mList.addAll(scheduleListViewModels);
 
         notifyDataSetChanged();
