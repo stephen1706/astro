@@ -1,9 +1,11 @@
 package com.stephen.astro.modelhandlers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.stephen.astro.AstroDataBridge;
 import com.stephen.astro.Constants;
+import com.stephen.astro.PaginationFinishException;
 import com.stephen.astro.viewmodels.ChannelViewModel;
 import com.stephen.astro.viewmodels.ScheduleListViewModel;
 
@@ -28,7 +30,7 @@ public class ScheduleModelHandler extends BaseModelHandler {
         requestFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     }
 
-    public Observable<ArrayList<ScheduleListViewModel>> getScheduleList(int sort, Calendar calendar) {
+    public Observable<ArrayList<ScheduleListViewModel>> getScheduleList(int sort, Calendar calendar, int index) {
         long offsetFromGMT = calendar.getTimeZone().getRawOffset();
         long differenceToServer = Constants.SERVER_TIMEZONE - offsetFromGMT;
 
@@ -39,12 +41,23 @@ public class ScheduleModelHandler extends BaseModelHandler {
         calendar.add(Calendar.MINUTE, 59);
         String endTime = requestFormat.format(calendar.getTime());
 
-        return getChannelListByNumber()
+        Observable<ArrayList<ChannelViewModel>> observable;
+        if(sort == Constants.SORT_NAME){
+            observable = getChannelListSortedByName();
+        } else {
+            observable = getChannelListByNumber();
+        }
+        return observable
                 .observeOn(Schedulers.newThread())
                 .map(channelViewModels -> {
+                    if (index >= channelViewModels.size()) {
+                        Log.d("test","PaginationFinishException");
+                        throw new PaginationFinishException();
+                    }
+
                     String channelIds = "";
 
-                    for(int i = 0 ;i<10;i++){//todo stephen add pagination
+                    for (int i = index; i < index + Constants.PAGINATION_LENGTH && i < channelViewModels.size(); i++) {
                         ChannelViewModel channelViewModel = channelViewModels.get(i);
                         channelIds += channelViewModel.getChannelId() + ",";
                     }
@@ -56,7 +69,7 @@ public class ScheduleModelHandler extends BaseModelHandler {
                         mApiService.getScheduleList(channelIds, startTime, endTime))//request time is in malaysia time +8 GMT
                 .map(AstroDataBridge::get2dScheduleData)
                 .map((map) -> {
-                    if(sort == Constants.SORT_NAME){
+                    if (sort == Constants.SORT_NAME) {
                         return AstroDataBridge.sortByChannelName(map);
                     } else {
                         return AstroDataBridge.sortByChannelNumber(map);
