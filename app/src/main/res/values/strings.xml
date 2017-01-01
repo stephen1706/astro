@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Astro</string>
+    <string name="fail_get_channel_list">Fail to get channel list</string>
+    <string name="loading">Loading...</string>
+    <string name="sort_by_number">Sort by Number</string>
+    <string name="sort_by_name">Sort by Name</string>
+    <string name="fail_get_schedule">Fail to get schedule list</string>
+</resources>

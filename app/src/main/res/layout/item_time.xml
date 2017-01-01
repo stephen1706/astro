@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/schedule_width"
+    android:layout_height="@dimen/schedule_height"
+    android:gravity="center"
+    android:background="@color/gray"
+    android:text="01:00">
+
+</TextView>
