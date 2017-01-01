@@ -34,6 +34,7 @@
 
         <HorizontalScrollView
             android:layout_width="match_parent"
+            android:scrollbars="none"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -45,199 +46,156 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:background="@color/gray"
+                    android:divider="@drawable/divider_vertical"
+                    android:orientation="horizontal"
+                    android:showDividers="beginning|middle">
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="00:00" />
+                        android:text="12AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="01:00" />
+                        android:text="1AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
                         android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="02:00" />
+                        android:text="2AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="03:00" />
+                        android:text="3AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="04:00" />
+                        android:text="4AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="05:00" />
+                        android:text="5AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="06:00" />
+                        android:text="6AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="07:00" />
+                        android:text="7AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="08:00" />
+                        android:text="8AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="09:00" />
+                        android:text="9AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
                         android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="10:00" />
+                        android:text="10AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="11:00" />
+                        android:text="11AM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="12:00" />
+                        android:text="12PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="13:00" />
+                        android:text="1PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="14:00" />
+                        android:text="2PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="15:00" />
+                        android:text="3PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="16:00" />
+                        android:text="4PN" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="17:00" />
+                        android:text="5PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="18:00" />
+                        android:text="6PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="19:00" />
+                        android:text="7PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="20:00" />
+                        android:text="8PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="21:00" />
+                        android:text="9PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="22:00" />
+                        android:text="10PM" />
 
                     <TextView
-                        android:layout_width="@dimen/schedule_width"
+                        android:layout_width="@dimen/header_width"
                         android:layout_height="@dimen/schedule_height"
-                        android:background="@color/gray"
-                        android:drawableLeft="@drawable/divider_vertical"
                         android:gravity="center"
-                        android:text="23:00" />
+                        android:text="11PM" />
 
                 </LinearLayout>
 
@@ -250,5 +208,6 @@
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
-    <include layout="@layout/row_loading"/>
+
+    <include layout="@layout/row_loading" />
 </LinearLayout>
