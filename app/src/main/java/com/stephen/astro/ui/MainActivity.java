@@ -22,9 +22,10 @@ import java.util.ArrayList;
 
 import io.reactivex.Observable;
 
+import static com.stephen.astro.Constants.SORT_NAME;
+import static com.stephen.astro.Constants.SORT_NUMBER;
+
 public class MainActivity extends RxAppCompatActivity {
-    public static final int SORT_NUMBER = 0;
-    public static final int SORT_NAME = 1;
 
     private RecyclerView mRecyclerView;
     private MainModelHandler mModelHandler;
@@ -36,7 +37,7 @@ public class MainActivity extends RxAppCompatActivity {
         mModelHandler = new MainModelHandler(this);
 
         setUpView();
-        setUpRequestAPI(SORT_NAME);
+        setUpRequestAPI(SORT_NUMBER);
     }
 
     private void setUpRequestAPI(int sort) {

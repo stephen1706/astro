@@ -2,7 +2,6 @@ package com.stephen.astro;
 
 import android.content.Context;
 
-import com.stephen.astro.comparator.ScheduleComparatorByName;
 import com.stephen.astro.comparator.ScheduleComparatorByNumber;
 import com.stephen.astro.datamodels.ChannelDataModel;
 import com.stephen.astro.datamodels.ChannelListDataModel;
@@ -18,11 +17,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
@@ -50,26 +53,41 @@ public class AstroDataBridge {
         return list;
     }
 
-    public static HashMap<Integer, ArrayList<ScheduleDataModel>>  sortScheduleByName(HashMap<Integer, ArrayList<ScheduleDataModel>> scheduleListDataModel){
-        for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : scheduleListDataModel.entrySet()) {
-            ArrayList<ScheduleDataModel> list = entry.getValue();
+    public static LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> sortByChannelNumber(Map<Integer, ArrayList<ScheduleDataModel>> map) {
+        List<Map.Entry<Integer, ArrayList<ScheduleDataModel>>> list = new LinkedList<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>(map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>() {
+            @Override
+            public int compare(Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry1, Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry2) {
+                return Integer.parseInt(entry1.getValue().get(0).getChannelStbNumber())
+                        - Integer.parseInt(entry2.getValue().get(0).getChannelStbNumber());
+            }
+        });
 
-            Collections.sort(list, new ScheduleComparatorByName());
+        LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> result = new LinkedHashMap<>();
+        for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
         }
-        return scheduleListDataModel;
+        return result;
     }
 
-    public static HashMap<Integer, ArrayList<ScheduleDataModel>>  sortScheduleByNumber(HashMap<Integer, ArrayList<ScheduleDataModel>> scheduleListDataModel){
-        for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : scheduleListDataModel.entrySet()) {
-            ArrayList<ScheduleDataModel> list = entry.getValue();
+    public static LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> sortByChannelName(Map<Integer, ArrayList<ScheduleDataModel>> map) {
+        List<Map.Entry<Integer, ArrayList<ScheduleDataModel>>> list = new LinkedList<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>(map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>() {
+            @Override
+            public int compare(Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry1, Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry2) {
+                return entry1.getValue().get(0).getChannelTitle().compareTo(entry2.getValue().get(0).getChannelTitle());
+            }
+        });
 
-            Collections.sort(list, new ScheduleComparatorByNumber());
+        LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> result = new LinkedHashMap<>();
+        for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
         }
-        return scheduleListDataModel;
+        return result;
     }
 
-    public static HashMap<Integer, ArrayList<ScheduleDataModel>> get2dScheduleData(ScheduleListDataModel scheduleListDataModel){
-        HashMap<Integer, ArrayList<ScheduleDataModel>> data = new HashMap<>();
+    public static TreeMap<Integer, ArrayList<ScheduleDataModel>> get2dScheduleData(ScheduleListDataModel scheduleListDataModel) {
+        TreeMap<Integer, ArrayList<ScheduleDataModel>> data = new TreeMap<>();
 
         for (ScheduleDataModel dataModel : scheduleListDataModel.getGetevent()) {
             if (data.containsKey(dataModel.getChannelId())) {
@@ -81,12 +99,99 @@ public class AstroDataBridge {
                 data.put(dataModel.getChannelId(), list);
             }
         }
+        for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : data.entrySet()) {
+            ArrayList<ScheduleDataModel> list = entry.getValue();
+            Collections.sort(list, new ScheduleComparatorByNumber());
+        }
 
-        return data;
+        return data;//already sorted by channelId from treeMap
+    }
+
+    public static ArrayList<ScheduleListViewModel> getScheduleList(Context context, LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> data, String startTime) {
+        SimpleDateFormat timeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat startTimeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat outSdf = new SimpleDateFormat("HH:mm");
+
+        timeSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        TimeZone malaysiaTimezone = new SimpleTimeZone((int) TimeUnit.HOURS.toMillis(8), "GMT+8");
+        startTimeSdf.setTimeZone(malaysiaTimezone);
+
+        ArrayList<ScheduleListViewModel> list = new ArrayList<ScheduleListViewModel>();
+        ScheduleListViewModel currentChannel = null;
+
+        for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : data.entrySet()) {
+            ScheduleDataModel lastSchedule = null;
+
+            ArrayList<ScheduleDataModel> scheduleDataModels = entry.getValue();
+            currentChannel = new ScheduleListViewModel();
+            currentChannel.setChannelId(entry.getKey());
+            currentChannel.setChannelName(scheduleDataModels.get(0).getChannelTitle());
+            currentChannel.setChannelNumber(Integer.parseInt(scheduleDataModels.get(0).getChannelStbNumber()));
+
+            ArrayList<ScheduleViewModel> scheduleViewModels = new ArrayList<>();
+            //add empty padding
+            ScheduleViewModel emptyPaddingStart = new ScheduleViewModel();
+            try {
+                Date startDate = startTimeSdf.parse(startTime);
+                Date startFirstEventDate = timeSdf.parse(scheduleDataModels.get(0).getDisplayDateTimeUtc());
+
+                long difference = startFirstEventDate.getTime() - startDate.getTime();
+                int duration = (int) TimeUnit.MILLISECONDS.toMinutes(difference);//add leftover from previous day
+                emptyPaddingStart.setDuration(duration);
+                emptyPaddingStart.setWidth(getWidth(duration, context));
+                scheduleViewModels.add(emptyPaddingStart);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            for(ScheduleDataModel dataModel : scheduleDataModels){
+                if(lastSchedule != null) {
+                    try {//add middle gap if any
+                        Date lastScheduleStartDate = timeSdf.parse(lastSchedule.getDisplayDateTimeUtc());
+                        long lastScheduleFinishTime = lastScheduleStartDate.getTime()
+                                + getDurationInMillis(lastSchedule.getDisplayDuration());
+
+                        long currentScheduleStartDate = timeSdf.parse(dataModel.getDisplayDateTimeUtc()).getTime();
+
+                        if (currentScheduleStartDate > lastScheduleFinishTime) {
+                            ScheduleViewModel emptyPaddingMiddle = new ScheduleViewModel();
+                            int duration = (int) TimeUnit.MILLISECONDS.toMinutes(currentScheduleStartDate - lastScheduleFinishTime);
+                            emptyPaddingMiddle.setDuration(duration);
+                            emptyPaddingMiddle.setWidth(getWidth(duration, context));
+                            scheduleViewModels.add(emptyPaddingMiddle);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                ScheduleViewModel viewModel = new ScheduleViewModel();
+                viewModel.setRawTimeUTC(dataModel.getDisplayDateTimeUtc());
+                viewModel.setEventId(dataModel.getEventID());
+                viewModel.setProgramTitle(dataModel.getProgrammeTitle());
+
+                int duration = getDurationInMinutes(dataModel.getDisplayDuration());
+                viewModel.setDuration(duration);
+                viewModel.setWidth(getWidth(duration, context));
+                try {
+                    Date date = timeSdf.parse(dataModel.getDisplayDateTimeUtc());
+                    viewModel.setStartTime(outSdf.format(date));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                scheduleViewModels.add(viewModel);
+                lastSchedule = dataModel;
+            }
+            currentChannel.setScheduleList(scheduleViewModels);
+
+            list.add(currentChannel);
+        }
+
+        return list;
     }
 
     public static ArrayList<ScheduleListViewModel> getScheduleList(Context context, ScheduleListDataModel scheduleListDataModel, String startTime) {
-        //todo stephen need to make data 2dimenstion with hashmap<ChannelId, Arraylist<ScheduleDataModel>>, then sort the arraylist with time
         SimpleDateFormat timeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat startTimeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         SimpleDateFormat outSdf = new SimpleDateFormat("HH:mm");
@@ -98,6 +203,7 @@ public class AstroDataBridge {
         ArrayList<ScheduleListViewModel> list = new ArrayList<ScheduleListViewModel>();
         ScheduleListViewModel currentChannel = null;
         ScheduleDataModel lastSchedule = null;
+
 
         for (ScheduleDataModel dataModel : scheduleListDataModel.getGetevent()) {
             if (currentChannel == null || currentChannel.getChannelId() != dataModel.getChannelId()) {
@@ -126,7 +232,7 @@ public class AstroDataBridge {
                 }
             } else {
                 //we need to add empty if there is a gap in the middle then we need to insert blank gap
-                if(lastSchedule != null) {
+                if (lastSchedule != null) {
                     try {
                         Date lastScheduleStartDate = timeSdf.parse(lastSchedule.getDisplayDateTimeUtc());
                         long lastScheduleFinishTime = lastScheduleStartDate.getTime()
@@ -134,7 +240,7 @@ public class AstroDataBridge {
 
                         long currentScheduleStartDate = timeSdf.parse(dataModel.getDisplayDateTimeUtc()).getTime();
 
-                        if(currentScheduleStartDate > lastScheduleFinishTime){
+                        if (currentScheduleStartDate > lastScheduleFinishTime) {
                             ScheduleViewModel emptyPaddingStart = new ScheduleViewModel();
                             int duration = (int) TimeUnit.MILLISECONDS.toMinutes(currentScheduleStartDate - lastScheduleFinishTime);
                             emptyPaddingStart.setDuration(duration);

@@ -12,6 +12,6 @@ public class ChannelComparatorByName implements Comparator<ChannelViewModel>{
 
     @Override
     public int compare(ChannelViewModel o, ChannelViewModel o2) {
-        return o.getChannelName().charAt(0) - o2.getChannelName().charAt(0);
+        return o.getChannelName().compareTo(o2.getChannelName());
     }
 }

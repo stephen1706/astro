@@ -5,4 +5,6 @@
     <string name="sort_by_number">Sort by Number</string>
     <string name="sort_by_name">Sort by Name</string>
     <string name="fail_get_schedule">Fail to get schedule list</string>
+    <string name="change_date">Change Date</string>
+    <string name="no_schedule">No schedule available</string>
 </resources>
