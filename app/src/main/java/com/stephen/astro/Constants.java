@@ -12,6 +12,8 @@ public interface Constants {
 
     int SORT_NUMBER = 0;
     int SORT_NAME = 1;
+    int SORT_FAVOURITE = 2;
+
     int PAGINATION_LENGTH = 15;
 
 }

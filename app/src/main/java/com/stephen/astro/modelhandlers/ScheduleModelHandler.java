@@ -1,7 +1,6 @@
 package com.stephen.astro.modelhandlers;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.stephen.astro.AstroDataBridge;
 import com.stephen.astro.Constants;
@@ -44,14 +43,15 @@ public class ScheduleModelHandler extends BaseModelHandler {
         Observable<ArrayList<ChannelViewModel>> observable;
         if(sort == Constants.SORT_NAME){
             observable = getChannelListSortedByName();
-        } else {
+        } else if(sort == Constants.SORT_NUMBER){
             observable = getChannelListByNumber();
+        } else {
+            observable = getChannelListSortedByFavourite();
         }
         return observable
                 .observeOn(Schedulers.newThread())
                 .map(channelViewModels -> {
                     if (index >= channelViewModels.size()) {
-                        Log.d("test","PaginationFinishException");
                         throw new PaginationFinishException();
                     }
 
@@ -71,8 +71,10 @@ public class ScheduleModelHandler extends BaseModelHandler {
                 .map((map) -> {
                     if (sort == Constants.SORT_NAME) {
                         return AstroDataBridge.sortByChannelName(map);
-                    } else {
+                    } else if(sort == Constants.SORT_NUMBER){
                         return AstroDataBridge.sortByChannelNumber(map);
+                    } else {
+                        return AstroDataBridge.sortByFavourite(map, mFavouriteList);
                     }
                 })
                 .map(channelListDataModel -> AstroDataBridge.getScheduleList(mContext, channelListDataModel, startTime))

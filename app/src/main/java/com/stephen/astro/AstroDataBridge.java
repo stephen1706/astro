@@ -16,7 +16,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -51,12 +50,36 @@ public class AstroDataBridge {
 
     public static LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> sortByChannelNumber(Map<Integer, ArrayList<ScheduleDataModel>> map) {
         List<Map.Entry<Integer, ArrayList<ScheduleDataModel>>> list = new LinkedList<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>() {
-            @Override
-            public int compare(Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry1, Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry2) {
-                return Integer.parseInt(entry1.getValue().get(0).getChannelStbNumber())
-                        - Integer.parseInt(entry2.getValue().get(0).getChannelStbNumber());
+        Collections.sort(list, (entry1, entry2) -> Integer.parseInt(entry1.getValue().get(0).getChannelStbNumber())
+                - Integer.parseInt(entry2.getValue().get(0).getChannelStbNumber()));
+
+        LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> result = new LinkedHashMap<>();
+        for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+    public static LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> sortByFavourite(Map<Integer, ArrayList<ScheduleDataModel>> map,
+                                                                                       ArrayList<Integer> favouriteList) {
+        List<Map.Entry<Integer, ArrayList<ScheduleDataModel>>> list = new LinkedList<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>(map.entrySet());
+        Collections.sort(list, (entry1, entry2) -> {
+            ScheduleDataModel dataModel1 = entry1.getValue().get(0);
+            ScheduleDataModel dataModel2 = entry2.getValue().get(0);
+
+            if ((favouriteList.contains(dataModel1.getChannelId()) && favouriteList.contains(dataModel2.getChannelId()))
+                    || (!favouriteList.contains(dataModel1.getChannelId()) && !favouriteList.contains(dataModel2.getChannelId()))) {
+                return Integer.parseInt(dataModel1.getChannelStbNumber())
+                        - Integer.parseInt(dataModel2.getChannelStbNumber());
+            } else if(favouriteList.contains(dataModel1.getChannelId())){
+                return -1;
+            } else if(favouriteList.contains(dataModel2.getChannelId())){
+                return 1;
+            } else {
+                return 0;
             }
+
+
         });
 
         LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> result = new LinkedHashMap<>();
@@ -68,12 +91,8 @@ public class AstroDataBridge {
 
     public static LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> sortByChannelName(Map<Integer, ArrayList<ScheduleDataModel>> map) {
         List<Map.Entry<Integer, ArrayList<ScheduleDataModel>>> list = new LinkedList<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<Integer, ArrayList<ScheduleDataModel>>>() {
-            @Override
-            public int compare(Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry1, Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry2) {
-                return entry1.getValue().get(0).getChannelTitle().compareTo(entry2.getValue().get(0).getChannelTitle());
-            }
-        });
+        Collections.sort(list, (entry1, entry2) ->
+                entry1.getValue().get(0).getChannelTitle().compareTo(entry2.getValue().get(0).getChannelTitle()));
 
         LinkedHashMap<Integer, ArrayList<ScheduleDataModel>> result = new LinkedHashMap<>();
         for (Map.Entry<Integer, ArrayList<ScheduleDataModel>> entry : list) {

@@ -24,11 +24,13 @@ import com.stephen.astro.util.ViewUtils;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.stephen.astro.Constants.PAGINATION_LENGTH;
+import static com.stephen.astro.Constants.SORT_FAVOURITE;
 import static com.stephen.astro.Constants.SORT_NAME;
 import static com.stephen.astro.Constants.SORT_NUMBER;
 
@@ -52,12 +54,14 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
     private ProgressDialog progressDialog;
     private boolean isFinished;
     private View loadingFrame;
+    private SimpleDateFormat mSimpleDateFormat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         mModelHandler = new ScheduleModelHandler(this);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setUpAttribute();
@@ -78,6 +82,8 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
 
         datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+
+        mSimpleDateFormat = new SimpleDateFormat("d MMM");
     }
 
     private void setUpRequestAPI(int sort) {
@@ -94,6 +100,9 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(scheduleListViewModels -> {
+                    getSupportActionBar().setTitle(getString(R.string.tv_guide_date,
+                            mSimpleDateFormat.format(calendar.getTime())));
+
                     if (scheduleListViewModels.size() == 0) {
                         Toast.makeText(this, R.string.no_schedule, Toast.LENGTH_SHORT).show();
                     }
@@ -188,6 +197,10 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
             case R.id.sort_number:
                 mIndex = 0;
                 setUpRequestAPI(SORT_NUMBER);
+                break;
+            case R.id.sort_favourite:
+                mIndex = 0;
+                setUpRequestAPI(SORT_FAVOURITE);
                 break;
             case R.id.change_date:
                 Fragment picker = getSupportFragmentManager().findFragmentByTag(DATEPICKER_TAG);

@@ -21,7 +21,7 @@
                 android:layout_height="@dimen/schedule_height"
                 android:background="@color/gray"
                 android:gravity="center"
-                android:text="Channel" />
+                android:text="@string/channel" />
 
             <ListView
                 android:id="@+id/list_view_channel"

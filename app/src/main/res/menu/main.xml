@@ -15,6 +15,10 @@
         android:title="@string/sort_by_name"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/sort_favourite"
+        android:title="@string/sort_by_favourite"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/logout"
         android:title="@string/logout"
         app:showAsAction="never"/>

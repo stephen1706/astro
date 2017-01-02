@@ -6,6 +6,7 @@ import com.stephen.astro.AstroDataBridge;
 import com.stephen.astro.SharedPreferenceConstants;
 import com.stephen.astro.api.AstroApiService;
 import com.stephen.astro.api.FavouriteApiService;
+import com.stephen.astro.comparator.ChannelComparatorByFavourite;
 import com.stephen.astro.comparator.ChannelComparatorByName;
 import com.stephen.astro.comparator.ChannelComparatorByNumber;
 import com.stephen.astro.datamodels.ChannelListDataModel;
@@ -99,6 +100,16 @@ public class BaseModelHandler {
                 .subscribeOn(Schedulers.newThread())
                 .map((viewModels) -> {
                     Collections.sort(viewModels, new ChannelComparatorByName());
+                    return viewModels;
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<ArrayList<ChannelViewModel>> getChannelListSortedByFavourite(){
+        return getChannelList()
+                .subscribeOn(Schedulers.newThread())
+                .map((viewModels) -> {
+                    Collections.sort(viewModels, new ChannelComparatorByFavourite());
                     return viewModels;
                 })
                 .observeOn(AndroidSchedulers.mainThread());

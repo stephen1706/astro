@@ -13,4 +13,8 @@
     <string name="please_login_to_use_our_apps">Please login to use our apps</string>
     <string name="fail_login">Fail to login, please try again later</string>
     <string name="logout">Log Out</string>
+    <string name="sort_by_favourite">Sort by Favourite</string>
+    <string name="channel">Channel</string>
+    <string name="channel_list">Channel List</string>
+    <string name="tv_guide_date">TV Guide on %1$s</string>
 </resources>
