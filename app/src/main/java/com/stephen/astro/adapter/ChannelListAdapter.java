@@ -31,7 +31,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelViewHolder> 
     private void initCache(List<ChannelViewModel> list) {
         for(ChannelViewModel viewModel : list){
             if(viewModel.isFavourite()){
-                favourited.add(viewModel.getChannelNumber());
+                favourited.add(viewModel.getChannelId());
             }
         }
     }
@@ -49,13 +49,13 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelViewHolder> 
         ChannelViewModel item = list.get(position);
         holder.channelName.setText(item.getChannelName());
         holder.channelNumber.setText(String.valueOf(item.getChannelNumber()));
-        if(favourited.contains(item.getChannelNumber())){
+        if(favourited.contains(item.getChannelId())){
             holder.favouriteButton.setImageResource(android.R.drawable.star_big_on);
             holder.favouriteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mListener.onDislike(item.getChannelNumber());
-                    favourited.remove(item.getChannelNumber());
+                    mListener.onDislike(item.getChannelId());
+                    favourited.remove(item.getChannelId());
                     notifyDataSetChanged();
                 }
             });
@@ -64,8 +64,8 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelViewHolder> 
             holder.favouriteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mListener.onLike(item.getChannelNumber());
-                    favourited.add(item.getChannelNumber());
+                    mListener.onLike(item.getChannelId());
+                    favourited.add(item.getChannelId());
                     notifyDataSetChanged();
                 }
             });

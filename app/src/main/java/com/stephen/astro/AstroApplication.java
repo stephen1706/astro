@@ -2,7 +2,10 @@ package com.stephen.astro;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.stephen.astro.provider.ApiProvider;
+import com.stephen.astro.util.Prefs;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -24,9 +27,13 @@ public class AstroApplication extends Application {
         Realm.setDefaultConfiguration(config);
 
         initProvider();
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
     }
 
     private void initProvider() {
+        Prefs.initPrefs(this);
         ApiProvider.setUp();
     }
 }

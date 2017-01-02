@@ -7,7 +7,6 @@ import com.stephen.astro.datamodels.ChannelDataModel;
 import com.stephen.astro.datamodels.ChannelListDataModel;
 import com.stephen.astro.datamodels.ScheduleDataModel;
 import com.stephen.astro.datamodels.ScheduleListDataModel;
-import com.stephen.astro.realm.Favourite;
 import com.stephen.astro.util.ViewUtils;
 import com.stephen.astro.viewmodels.ChannelViewModel;
 import com.stephen.astro.viewmodels.ScheduleListViewModel;
@@ -28,23 +27,20 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
-import io.realm.Realm;
-
 /**
  * Created by stephenadipradhana on 12/28/16.
  */
 
 public class AstroDataBridge {
-    public static ArrayList<ChannelViewModel> getChannelListViewModel(ChannelListDataModel channelListDataModel) {
-        Realm realm = Realm.getDefaultInstance();
-
+    public static ArrayList<ChannelViewModel> getChannelListViewModel(ChannelListDataModel channelListDataModel,
+                                                                      ArrayList<Integer> favouriteList) {
         ArrayList<ChannelViewModel> list = new ArrayList<>();
         for (ChannelDataModel dataModel : channelListDataModel.getChannels()) {
             ChannelViewModel viewModel = new ChannelViewModel();
             viewModel.setChannelId(dataModel.getChannelId());
             viewModel.setChannelName(dataModel.getChannelTitle());
             viewModel.setChannelNumber(dataModel.getChannelStbNumber());
-            if (realm.where(Favourite.class).equalTo("channelId", dataModel.getChannelStbNumber()).findFirst() != null) {
+            if (favouriteList.contains(dataModel.getChannelId())) {
                 viewModel.setFavourite(true);
             }
             list.add(viewModel);

@@ -11,7 +11,7 @@ import retrofit2.http.Query;
  * Created by stephenadipradhana on 12/14/16.
  */
 
-public interface ApiService {
+public interface AstroApiService {
     @GET(ApiRoutes.GET_CHANNEL_ROUTES)
     Observable<ChannelListDataModel> getChannelList();
 

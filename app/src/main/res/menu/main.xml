@@ -3,11 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/tv_guide"
+        android:title="@string/tv_guide"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/sort_number"
         android:title="@string/sort_by_number"
         app:showAsAction="never"/>
     <item
         android:id="@+id/sort_name"
         android:title="@string/sort_by_name"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/logout"
+        android:title="@string/logout"
         app:showAsAction="never"/>
 </menu>

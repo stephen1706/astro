@@ -4,7 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.stephen.astro.api.ApiRoutes;
-import com.stephen.astro.api.ApiService;
+import com.stephen.astro.api.AstroApiService;
+import com.stephen.astro.api.FavouriteApiService;
 import com.stephen.astro.api.NullOnEmptyConverterFactory;
 
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class ApiProvider {
-    private static ApiService apiService;
+    private static AstroApiService astroApiService;
+    private static FavouriteApiService favouriteApiService;
 
     public static void setUp() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -34,18 +36,31 @@ public class ApiProvider {
 
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiRoutes.BASE_URL)
+        Retrofit astroRetrofit = new Retrofit.Builder()
+                .baseUrl(ApiRoutes.ASTRO_BASE_URL)
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
                 .build();
 
-        apiService = retrofit.create(ApiService.class);
+        Retrofit favouriteRetrofit = new Retrofit.Builder()
+                .baseUrl(ApiRoutes.FAVOURITE_BASE_URL)
+                .addConverterFactory(new NullOnEmptyConverterFactory())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(client)
+                .build();
+
+        astroApiService = astroRetrofit.create(AstroApiService.class);
+        favouriteApiService = favouriteRetrofit.create(FavouriteApiService.class);
     }
 
-    public static ApiService getApiService() {
-        return apiService;
+    public static FavouriteApiService getFavouriteApiService() {
+        return favouriteApiService;
+    }
+
+    public static AstroApiService getAstroApiService() {
+        return astroApiService;
     }
 }

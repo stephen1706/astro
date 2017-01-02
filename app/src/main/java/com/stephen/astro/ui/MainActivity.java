@@ -1,15 +1,17 @@
 package com.stephen.astro.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.stephen.astro.R;
 import com.stephen.astro.adapter.ChannelListAdapter;
 import com.stephen.astro.modelhandlers.MainModelHandler;
@@ -29,6 +31,7 @@ public class MainActivity extends RxAppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private MainModelHandler mModelHandler;
+    private ArrayList<String> mFavouriteList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class MainActivity extends RxAppCompatActivity {
         } else {
             observable = mModelHandler.getChannelListByNumber();
         }
+
         observable.compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe((channelViewModels) -> {
                     setUpAdapter(channelViewModels);
@@ -64,13 +68,11 @@ public class MainActivity extends RxAppCompatActivity {
         ChannelListAdapter adapter = new ChannelListAdapter(channelViewModels, new ChannelListAdapter.OnFavouriteListener() {
             @Override
             public void onLike(int id) {
-                Log.d("test","like : " + id);
                 mModelHandler.addFavourite(id);
             }
 
             @Override
             public void onDislike(int id) {
-                Log.d("test","dislike : " + id);
                 mModelHandler.removeFavourite(id);
             }
         });
@@ -94,11 +96,21 @@ public class MainActivity extends RxAppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.tv_guide:
+                startActivity(new Intent(this, ScheduleActivity.class));
+                break;
             case R.id.sort_name:
                 setUpRequestAPI(SORT_NAME);
                 break;
             case R.id.sort_number:
                 setUpRequestAPI(SORT_NUMBER);
+                break;
+            case R.id.logout:
+                mModelHandler.clearCache();
+                LoginManager.getInstance().logOut();
+                TaskStackBuilder.create(this)
+                        .addNextIntent(new Intent(this, LoginActivity.class))
+                        .startActivities();
                 break;
         }
         return super.onOptionsItemSelected(item);

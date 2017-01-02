@@ -7,4 +7,10 @@
     <string name="fail_get_schedule">Fail to get schedule list</string>
     <string name="change_date">Change Date</string>
     <string name="no_schedule">No schedule available</string>
+    <string name="facebook_app_id">1409246369093559</string>
+    <string name="tv_guide">TV Guide</string>
+    <string name="welcome_to_astro">Welcome to Astro!</string>
+    <string name="please_login_to_use_our_apps">Please login to use our apps</string>
+    <string name="fail_login">Fail to login, please try again later</string>
+    <string name="logout">Log Out</string>
 </resources>

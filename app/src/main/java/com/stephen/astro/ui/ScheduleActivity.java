@@ -58,6 +58,7 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         mModelHandler = new ScheduleModelHandler(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setUpAttribute();
         setUpView();
@@ -177,6 +178,9 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
             case R.id.sort_name:
                 mIndex = 0;
                 setUpRequestAPI(SORT_NAME);
@@ -205,4 +209,5 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
         mIndex = 0;
         setUpRequestAPI(mCurrentSort);
     }
+
 }

@@ -66,7 +66,7 @@ public class ScheduleModelHandler extends BaseModelHandler {
                     return channelIds;
                 })
                 .flatMap(channelIds ->
-                        mApiService.getScheduleList(channelIds, startTime, endTime))//request time is in malaysia time +8 GMT
+                        mAstroApiService.getScheduleList(channelIds, startTime, endTime))//request time is in malaysia time +8 GMT
                 .map(AstroDataBridge::get2dScheduleData)
                 .map((map) -> {
                     if (sort == Constants.SORT_NAME) {
