@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 import static com.stephen.astro.Constants.PAGINATION_LENGTH;
 import static com.stephen.astro.Constants.SORT_FAVOURITE;
@@ -55,6 +56,7 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
     private boolean isFinished;
     private View loadingFrame;
     private SimpleDateFormat mSimpleDateFormat;
+    private Disposable mDisposable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,15 +90,20 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
 
     private void setUpRequestAPI(int sort) {
         isLoading = true;
+        if(mDisposable != null && !mDisposable.isDisposed()){
+            mDisposable.dispose();
+        }
+
         mCurrentSort = sort;
         if (mIndex == 0) {
+            isFinished = false;
             loadingFrame.setVisibility(View.GONE);
             progressDialog = ViewUtils.showProgressDialog(this, getString(R.string.loading));
         } else {
             loadingFrame.setVisibility(View.VISIBLE);
         }
 
-        mModelHandler.getScheduleList(sort, (Calendar) calendar.clone(), mIndex)
+        mDisposable = mModelHandler.getScheduleList(sort, (Calendar) calendar.clone(), mIndex)
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(scheduleListViewModels -> {
@@ -104,6 +111,7 @@ public class ScheduleActivity extends RxAppCompatActivity implements DatePickerD
                             mSimpleDateFormat.format(calendar.getTime())));
 
                     if (scheduleListViewModels.size() == 0) {
+                        isFinished = true;
                         Toast.makeText(this, R.string.no_schedule, Toast.LENGTH_SHORT).show();
                     }
 
